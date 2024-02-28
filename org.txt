@@ -1,0 +1,33 @@
+https://guicommits.com/organize-python-code-like-a-pro/
+
+gmaps_crawler
+├── src
+│   └── gmaps_crawler
+│        ├── __init__.py
+│        ├── config.py 👈 (Singular)
+│        ├── drivers.py
+│        ├── entities.py
+│        ├── exceptions.py
+│        ├── facades.py
+│        ├── main.py  👈 (Singular)
+│        └── storages.py
+│
+├── .gitignore
+├── pyproject.toml
+└── README.md
+
+# Para criação do próximo vídeo
+import sidrapy
+
+class Inflacao:
+  def __init__(self) -> None:
+    ipca_raw = sidrapy.get_table(table_code = '1737',
+                                territorial_level = '1',
+                                ibge_territorial_code = 'all',
+                                variable = '2266',
+                                period = 'all')
+
+    self.df = pd.DataFrame(ipca_raw)
+
+inf = Inflacao()
+inf.df
