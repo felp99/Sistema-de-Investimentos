@@ -1,249 +1,48 @@
-# Python para Análise de Ativos
+# Sistema de Investimentos
+## [UML](docs/UML.md)
+## Overview
 
-## UML
-### UML Inicial
+The Investment Analytics System is a comprehensive tool designed to facilitate the management and analysis of various types of investments. This system allows users to track their investment portfolios, analyze investment performance, and make informed decisions based on data-driven insights.
 
-```mermaid
-classDiagram
+## Features
 
-  class Investimento{
-    -ticker: str
-    -value: float
-    -start: datetime
-    -end: datetime
-    -freq: str
-    -period: int
-    -df: DataFrame
-    + __init__(ticker, value, start, end, freq, period)
-    + append_ticker(df): DataFrame
-    + append_selic(df): DataFrame
-  }
+- **Portfolio Management**: Users can create and manage investment portfolios consisting of different types of investments such as stocks, bonds, mutual funds, etc.
+- **Data Analysis**: The system provides robust data analysis capabilities, allowing users to analyze investment performance, compare returns, and identify trends.
+- **Visualization**: Visual representations such as charts and graphs enable users to understand investment data more intuitively.
+- **Recurring Investments**: Users can set up recurring investment schedules for specific investments, facilitating automated investment management.
+- **Risk Assessment**: The system includes tools for assessing investment risk and optimizing portfolio diversification to minimize risk.
+- **Customization**: Users can customize their investment tracking and analysis preferences to suit their individual needs and goals.
 
-  class Carteira{
-    -investments: Investimento[]
-    -df: DataFrame
-    -df_cumprod: DataFrame
-    +__init__(investments)
-    +generate_main_df()
-    +append_investments()
-    +counting()
-  }
+## Getting Started
 
-    Carteira "1" --* "0..*" Investimento
+To initialize the Investment Analytics System, follow these steps:
 
-```
+1. **Installation**: Clone the repository containing the system codebase to your local machine.
 
-### UML v1.2
+   ```bash
+   git clone <repository-url>
+   ```
 
-```mermaid
-classDiagram
+2. **Dependencies**: Make sure you have all the necessary dependencies installed.
 
-  class Carteira{
-    -investments: Investimento[]
-    -df: DataFrame
-    -df_cumprod: DataFrame
-    +__init__(investments)
-    +generate_main_df()
-    +append_investments()
-    +counting()
-  }
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-    class Investimento{
-        <<abstract>>
-        #ticker: str
-        #value: float
-        #start: datetime
-        #end: datetime
-        #freq: str
-        #period: int?
-        +__init__(ticker, value, start, end)
-        +generate_df():DataFrame
-    }
-    class InvestimentoSelic{
-        +__init__(*args, **kwargs)
-        +generate_df():DataFrame
+3. **Configuration**: Set up any configuration settings or parameters required by the system, such as API keys for accessing financial data sources.
 
-    }
-    class InvestimentoTicker{
-        +__init__(*args, **kwargs)
-        +generate_df():DataFrame
-    }
-    class InvestimentoRecorrente{
-        <<abstract>>
-        - freq: str
-        - period: str
-        +__init__(freq, period, *args, **kwargs)
-        +setup_recorrencia()
-    }
-    class InvestimentoSelicRecorrente{
-        +__init__(*args, **kwargs)
-        +generate_df():DataFrame
-    }
-    class InvestimentoTickerRecorrente{
-        +__init__(*args, **kwargs)
-        +generate_df():DataFrame
-    }
+4. **Data Import**: Import your investment data into the system. This may include transaction history, portfolio composition, and any other relevant data.
 
-    Investimento <|-- InvestimentoSelic
-    Investimento <|-- InvestimentoTicker
-    InvestimentoSelic <|-- InvestimentoSelicRecorrente
-    InvestimentoTicker <|-- InvestimentoTickerRecorrente
-    InvestimentoRecorrente <|-- InvestimentoSelicRecorrente
-    InvestimentoRecorrente <|-- InvestimentoTickerRecorrente
-    Carteira "1" --* "0..*" Investimento
-```
+5. **Initialization**: Instantiate the necessary objects and classes within the system to start analyzing your investments. This may involve creating a portfolio object, adding investments to it, and performing initial data analysis.
 
-### UML v1.3
+6. **Exploration**: Explore the various features and functionalities of the system to familiarize yourself with its capabilities. Experiment with different analysis techniques and visualization options to gain insights into your investments.
 
-```mermaid
-classDiagram
+7. **Regular Usage**: Incorporate the Investment Analytics System into your regular investment management routine. Use it to monitor portfolio performance, make investment decisions, and track progress towards your financial goals.
 
-  class Carteira{
-    -investments: Investimento[]
-  }
+## Contributing
 
-  class Investimento{
-      <<abstract>>
-      #ticker: str
-      #value: float
-      #start: datetime
-      #end: datetime
-  }
+Contributions to the Investment Analytics System are welcome! If you have ideas for new features, improvements, or bug fixes, feel free to submit a pull request or open an issue on the GitHub repository.
 
-  class InvestimentoSelic{
-  }
+## License
 
-  class InvestimentoTicker{
-  }
-
-  class InvestimentoRecorrente{
-      <<abstract>>
-      - freq: str
-      +setup_recorrencia()
-  }
-  class InvestimentoSelicRecorrente{
-
-  }
-  class InvestimentoTickerRecorrente{
-  }
-
-  class DataFrameUtil{
-    <<abstract>>
-    #df: DataFrame
-    #df_cumprod: DataFrame
-    #df_capital: DataFrame
-    #df_capital_cumprod: DataFrame
-    +generate_df():DataFrame
-    +append_dfs(DataFrame[]):DataFrame
-    +generate_blank_df(Datetime, Datetime):DataFrame
-  }
-
-  Investimento <|-- InvestimentoSelic
-  Investimento <|-- InvestimentoTicker
-  InvestimentoSelic <|-- InvestimentoSelicRecorrente
-  InvestimentoTicker <|-- InvestimentoTickerRecorrente
-  InvestimentoRecorrente <|-- InvestimentoSelicRecorrente
-  InvestimentoRecorrente <|-- InvestimentoTickerRecorrente
-
-  Investimento "1" <-- "0..*" Carteira
-  
-  DataFrameUtil <|-- Investimento
-  DataFrameUtil <|-- Carteira
-```
-
-### UML v1.4
-
-```mermaid
-classDiagram
-
-  class Data {
-    #df: DataFrame
-    #df_cumprod: DataFrame
-    #df_capital: DataFrame
-    #df_capital_cumprod: DataFrame
-  }
-
-  class Carteira{
-    -investments: Investimento[]
-  }
-
-  class Investimento{
-      <<abstract>>
-      #ticker: str
-      #value: float
-      #start: datetime
-      #end: datetime
-      #result: Data
-      #default: Data
-  }
-
-  class InvestimentoSelic{
-  }
-
-  class InvestimentoTicker{
-  }
-
-  class InvestimentoRecorrente{
-      <<abstract>>
-      - freq: str
-      +setup_recorrencia()
-  }
-  class InvestimentoSelicRecorrente{
-
-  }
-  class InvestimentoTickerRecorrente{
-  }
-
-  class DataFrameUtil{
-    <<abstract>>
-    +generate_df():DataFrame
-    +append_dfs(DataFrame[]):DataFrame
-    +generate_blank_df(Datetime, Datetime):DataFrame
-    +set_result(): void
-    +set_default(): void
-  }
-
-  Investimento <|-- InvestimentoSelic
-  Investimento <|-- InvestimentoTicker
-  InvestimentoSelic <|-- InvestimentoSelicRecorrente
-  InvestimentoTicker <|-- InvestimentoTickerRecorrente
-  InvestimentoRecorrente <|-- InvestimentoSelicRecorrente
-  InvestimentoRecorrente <|-- InvestimentoTickerRecorrente
-
-  Investimento "1" <-- "0..*" Carteira
-  
-  DataFrameUtil <|-- Investimento
-  DataFrameUtil <|-- Carteira
-
-  Carteira "1"-->"2" Data
-  Investimento "1"-->"2" Data
-```
-
-## Fluxo de Conteúdo
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Felipe
-    participant B as Python/Excel 
-    loop A cada Ideia
-    Felipe ->> B: Ideia
-    activate B
-    B ->> Projeto: Código
-    deactivate B
-    activate Projeto
-    Projeto ->> Resultado: Dados
-    par Projeto to Vídeo Longo
-    Projeto->>Vídeo Longo: Informação/Explicação
-    and Resultado to Vídeo Longo
-    Resultado->>Vídeo Longo: Informação/Explicação
-    end
-    deactivate Projeto
-    alt Projeto útil
-    Resultado -->> Felipe: Curiosidade/Informação
-    else Projeto inútil
-    Resultado -->> Projeto: Procura útilidade
-    end
-    end
-    Felipe ->> Vídeo Short: Curiosidade/Informação
-```
+This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute the code for both personal and commercial purposes.
