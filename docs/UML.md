@@ -217,6 +217,89 @@ classDiagram
   Investimento "1"-->"2" Data
 ```
 
+### UML v1.5
+
+```mermaid
+classDiagram
+
+  class Data {
+    #df: DataFrame
+    #df_cumprod: DataFrame
+    #df_capital: DataFrame
+    #df_capital_cumprod: DataFrame
+  }
+
+  class Carteira{
+    -investments: Investimento[]
+    -result: Data
+    -default: Data
+  }
+
+  class Investimento{
+      <<abstract>>
+      #ticker: str
+      #value: float
+      #start: datetime
+      #end: datetime
+      #result: Data
+      #default: Data
+  }
+
+  class InvestimentoSelic{
+  }
+
+  class InvestimentoTicker{
+  }
+
+  class InvestimentoRecorrente{
+      <<abstract>>
+      - freq: str
+      +setup_recorrencia()
+  }
+  class InvestimentoSelicRecorrente{
+
+  }
+  class InvestimentoTickerRecorrente{
+  }
+
+  class DataFrameUtil{
+    <<abstract>>
+    +generate_df():DataFrame
+    +append_dfs(DataFrame[]):DataFrame
+    +generate_blank_df(Datetime, Datetime):DataFrame
+    +set_result(): void
+    +set_default(): void
+  }
+
+  Investimento <|-- InvestimentoSelic
+  Investimento <|-- InvestimentoTicker
+  Investimento <|-- InvestimentoRecorrente
+  InvestimentoSelic <|-- InvestimentoSelicRecorrente
+  InvestimentoTicker <|-- InvestimentoTickerRecorrente
+  InvestimentoRecorrente <|-- InvestimentoSelicRecorrente
+  InvestimentoRecorrente <|-- InvestimentoTickerRecorrente
+
+  Investimento "1" <-- "0..*" Carteira
+  
+  DataFrameUtil <|-- Investimento
+  DataFrameUtil <|-- Carteira
+
+  Carteira "1"-->"2" Data
+  Investimento "1"-->"2" Data
+
+  class IPCA {
+  }
+
+  class InvestimentoIPCA {
+  }
+
+  Investimento <|-- InvestimentoIPCA
+  IPCA <|-- InvestimentoIPCA
+
+  IPCA <|-- DataFrameUtil
+  InvestimentoIPCA "1"-->"2" Data
+```
+
 ## Fluxo de Conteúdo
 
 ```mermaid
