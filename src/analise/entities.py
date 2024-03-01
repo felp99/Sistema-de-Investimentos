@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 import datetime
 import yfinance
-import time
+import sidrapy
 import plotly.express as px
 
 # Base class representing data
@@ -93,6 +93,8 @@ class Investimento(DataFrameUtil, ABC):
         df_cumprod = self.result.df.cumprod()/self.result.df.cumprod(),
         df_capital_cumprod = self.result.df_cumprod/self.result.df_cumprod * self.value
       )
+      
+      
 
     def __str__(self):
       return f"Investimento Isolado: \
@@ -312,3 +314,79 @@ class Carteira(DataFrameUtil, ABC):
       for i in self.investments:
         str_ += f"{i} \n"
       return str_
+
+from entities import *
+
+class IPCA(DataFrameUtil):
+  def __init__(self):
+    super().__init__()
+    
+    self.df = self.generate_df()
+     
+    pass
+  
+  def generate_df(self) -> pd.DataFrame:
+      """
+      This method generates a DataFrame containing IPCA data and transforms it to a desired format.
+
+      Returns:
+      DataFrame: A DataFrame containing transformed IPCA data.
+      """
+
+      # Fetch IPCA data using sidrapy library
+      ipca_raw = sidrapy.get_table(table_code='1737',
+                                  territorial_level='1',
+                                  ibge_territorial_code='all',
+                                  variable='2266',
+                                  period='all')
+
+      # Convert the fetched data to a DataFrame
+      df = pd.DataFrame(ipca_raw)
+
+      # Select only the necessary columns
+      df = df[['V', 'D2N']]
+
+      # Drop the first row, which might contain redundant information
+      df = df.drop(df.index[0])
+
+      # Transform the date column to a datetime format and set it as the index
+      df['date'] = df.D2N.apply(lambda x: self.transform_to_datetime(x))
+      df.set_index('date', inplace=True)
+      
+      # Convert the value column to numeric
+      df['IPCA'] = pd.to_numeric(df['V'])
+
+      # Drop the original date column
+      df.drop(columns=['D2N', 'V'], inplace=True)
+
+      # Generate a blank DataFrame covering the entire date range
+      df_blank = self.generate_blank_df(df.index[0], datetime.datetime.now())
+
+      # Join the original DataFrame with the blank DataFrame to ensure continuity of dates
+      df = self.join_dataframes(df_blank, [df])
+
+      return df
+  
+  def transform_to_datetime(self, date_str):
+      # Define month names in Portuguese
+      month_names_pt = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+                        'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+      
+      # Split the input string into month and year
+      month_str, year_str = date_str.split()
+      
+      # Find the index of the month name in the list of month names
+      month_index = month_names_pt.index(month_str.lower()) + 1  # Adding 1 to make it 1-indexed
+      
+      # Construct datetime object with day as 1, using the month index and year
+      date = datetime.datetime(int(year_str), month_index, 1)
+      
+      # Convert to pandas datetime format
+      pandas_date = pd.to_datetime(date)
+      
+      return pandas_date
+  
+class IPCAInvestimento(IPCA, Investimento):
+  def __init__(self):
+     super().__init__()
+     pass
